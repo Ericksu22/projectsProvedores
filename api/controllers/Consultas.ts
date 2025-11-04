@@ -1,4 +1,5 @@
 import { Request, Response } from 'express';
+import { consultamongo, consultamongoBarbero, consultamongoManifuristas, consultamongoMaquillistas, consultamongoPromocion } from '../services/consultasmongo';
 //import { query } from "../../database/conexion";
 
 export async function getPruebas(req: Request, res: Response) {
@@ -47,8 +48,10 @@ export async function getPruebas(req: Request, res: Response) {
 
 export async function getConsultas(req: Request, res: Response): Promise<Response> {
   console.log("Inicio de proceso de consultas");
-
+    
   try {
+      const valorrmon= await consultamongo();
+     console.log("valor de la respuesta de mongo", valorrmon)
     const array = [
       { accion: "Cortes clásicos", valor: "4.00" },
       { accion: "Cortes con estilos modernos DESDE", valor: "5.00" },
@@ -85,26 +88,13 @@ export async function getConsultas(req: Request, res: Response): Promise<Respons
 }
 
 
-export async function consultasmani(req: Request, res: Response): Promise<Response> {
+export async function consultamanicurista(req: Request, res: Response): Promise<Response> {
   console.log("Inicio de proceso de consultas");
 
   try {
-    const array = [
-      { accion: "Cortes clásicos", valor: "4.00" },
-      { accion: "Cortes con estilos modernos DESDE", valor: "5.00" },
-      { accion: "Depilación con cera de CEJA", valor: "3.00" },
-      { accion: "Depilación con navaja de CEJA", valor: "2.00" },
-      { accion: "Arreglo de barba", valor: "2.50" },
-      { accion: "Bigote", valor: "1.50" },
-      { accion: "Bigote + Barba", valor: "4.00" },
-      { accion: "Limpieza facial básica", valor: "10.00" },
-      { accion: "Limpieza facial profunda", valor: "15.00" },
-      { accion: "Rayitos parciales de hombre (40%)", valor: "25.00" },
-      { accion: "Rayitos normales de hombre (40%) DESDE", valor: "35.00" },
-      { accion: "Permanente parcial hombre (40%)", valor: "20.00" },
-      { accion: "Permanente normal hombre (40%)", valor: "20.00" }
-    ];
 
+    const valormanicurista = await consultamongoManifuristas();
+    const array =  valormanicurista
     // ✅ Retorno correcto en formato JSON
     return res.status(200).json({
       code: 200,
@@ -127,25 +117,43 @@ export async function consultasmani(req: Request, res: Response): Promise<Respon
 
 
 
-export async function consultasestilista(req: Request, res: Response): Promise<Response> {
+export async function consultaestilista(req: Request, res: Response): Promise<Response> {
   console.log("Inicio de proceso de consultas");
 
   try {
-    const array = [
-      { accion: "Cortes clásicos", valor: "4.00" },
-      { accion: "Cortes con estilos modernos DESDE", valor: "5.00" },
-      { accion: "Depilación con cera de CEJA", valor: "3.00" },
-      { accion: "Depilación con navaja de CEJA", valor: "2.00" },
-      { accion: "Arreglo de barba", valor: "2.50" },
-      { accion: "Bigote", valor: "1.50" },
-      { accion: "Bigote + Barba", valor: "4.00" },
-      { accion: "Limpieza facial básica", valor: "10.00" },
-      { accion: "Limpieza facial profunda", valor: "15.00" },
-      { accion: "Rayitos parciales de hombre (40%)", valor: "25.00" },
-      { accion: "Rayitos normales de hombre (40%) DESDE", valor: "35.00" },
-      { accion: "Permanente parcial hombre (40%)", valor: "20.00" },
-      { accion: "Permanente normal hombre (40%)", valor: "20.00" }
-    ];
+
+     const valorrmon= await consultamongo();
+     console.log("valor de la respuesta de mongo", valorrmon)
+    const array = valorrmon
+     
+    // ✅ Retorno correcto en formato JSON
+    return res.status(200).json({
+      code: 200,
+      message: "Ok",
+      data: array
+    });
+
+  } catch (error) {
+    console.error("❌ Error en proceso de consultas:", error);
+
+    // ✅ Siempre retorna algo en caso de error
+    return res.status(500).json({
+      code: 500,
+      message: "Error interno del servidor",
+      error: (error as Error).message
+    });
+  }
+}
+
+
+
+
+export async function consultabarbero(req: Request, res: Response): Promise<Response> {
+  console.log("Inicio de proceso de consultas");
+
+  try {
+    const valorbarbero  = await consultamongoBarbero();
+    const array = valorbarbero
 
     // ✅ Retorno correcto en formato JSON
     return res.status(200).json({
@@ -165,3 +173,61 @@ export async function consultasestilista(req: Request, res: Response): Promise<R
     });
   }
 }
+
+
+export async function consultamaquillista(req: Request, res: Response): Promise<Response> {
+  console.log("Inicio de proceso de consultas");
+
+  try {
+     const valormaquillista= await consultamongoMaquillistas();
+    const array = valormaquillista
+
+    // ✅ Retorno correcto en formato JSON
+    return res.status(200).json({
+      code: 200,
+      message: "Ok",
+      data: array
+    });
+
+  } catch (error) {
+    console.error("❌ Error en proceso de consultas:", error);
+
+    // ✅ Siempre retorna algo en caso de error
+    return res.status(500).json({
+      code: 500,
+      message: "Error interno del servidor",
+      error: (error as Error).message
+    });
+  }
+}
+
+
+export async function consultapromocion(req: Request, res: Response): Promise<Response> {
+  console.log("Inicio de proceso de consultas");
+
+  try {
+
+
+    const valorPromeciones=await consultamongoPromocion();
+    const array = valorPromeciones;
+
+    // ✅ Retorno correcto en formato JSON
+    return res.status(200).json({
+      code: 200,
+      message: "Ok",
+      data: array
+    });
+
+  } catch (error) {
+    console.error("❌ Error en proceso de consultas:", error);
+
+    // ✅ Siempre retorna algo en caso de error
+    return res.status(500).json({
+      code: 500,
+      message: "Error interno del servidor",
+      error: (error as Error).message
+    });
+  }
+}
+
+
